@@ -17,7 +17,8 @@
 	Created:			2018/09/11
 	Tested on:			Windows 7 Professional 64-bit, Windows 10 Pro 64-bit
 	Updated:			2018/09/20
-	Version:			1.2
+	Version:			1.3
+	Changes in v1.3:	Corrected some hyphen characters from "–"(U+00E2 / U+0080 / U+0093 / U+2013) to "-" (U+002D).
 	Changes in v1.2:	Changed configuration of Windows Update from COM objects to Registry.
 	Changes in v1.1:	Added configuration of Windows Update settings.
 
@@ -136,10 +137,10 @@ Function Configure-WindowsUpdate {
 			
 			Try {
 				If (-Not (Test-Path $WindowsUpdate_RegistryPath)){
-					New-Item -Path $WindowsUpdate_RegistryPath –Force | Out-Null;
+					New-Item -Path $WindowsUpdate_RegistryPath -Force | Out-Null;
 				}
 				
-				Set-ItemProperty -Path $WindowsUpdate_RegistryPath -Name "NoAutoUpdate" -Type DWORD -Value "0" –Force;
+				Set-ItemProperty -Path $WindowsUpdate_RegistryPath -Name "NoAutoUpdate" -Type DWORD -Value "0" -Force;
 			}
 			Catch {
 				Write-Output "`t `t ...FAILURE. Exiting...";
@@ -169,7 +170,7 @@ Function Configure-WindowsUpdate {
 			Write-Output "`t `t Setting to ""Install updates automatically (recommended)""...";
 			
 			Try {
-				Set-ItemProperty -Path $WindowsUpdate_RegistryPath -Name "AUOptions" -Type DWORD -Value "4" –Force;
+				Set-ItemProperty -Path $WindowsUpdate_RegistryPath -Name "AUOptions" -Type DWORD -Value "4" -Force;
 			}
 			Catch {
 				Write-Output "`t `t ...FAILURE. Exiting...";
@@ -190,8 +191,8 @@ Function Configure-WindowsUpdate {
 				Write-Output "`t `t Setting to enabled...";
 				
 				Try {
-					Set-ItemProperty -Path $WindowsUpdate_RegistryPath -Name "AutoInstallMinorUpdates" -Type DWORD -Value "0" –Force;
-					Set-ItemProperty -Path $WindowsUpdate_RegistryPath -Name "IncludeRecommendedUpdates" -Type DWORD -Value "1" –Force;
+					Set-ItemProperty -Path $WindowsUpdate_RegistryPath -Name "AutoInstallMinorUpdates" -Type DWORD -Value "0" -Force;
+					Set-ItemProperty -Path $WindowsUpdate_RegistryPath -Name "IncludeRecommendedUpdates" -Type DWORD -Value "1" -Force;
 				}
 				Catch {
 					Write-Output "`t `t ...FAILURE. Exiting...";
@@ -210,7 +211,7 @@ Function Configure-WindowsUpdate {
 			Write-Output "`t Setting Windows Update to update other Microsoft products...";
 			
 			Try {
-				Set-ItemProperty -Path $WindowsUpdate_RegistryPath -Name "AllowMUUpdateService" -Type DWORD -Value "1" –Force;
+				Set-ItemProperty -Path $WindowsUpdate_RegistryPath -Name "AllowMUUpdateService" -Type DWORD -Value "1" -Force;
 				
 				$MicrosoftUpdateServiceManager = New-Object -ComObject "Microsoft.Update.ServiceManager";
 				$MicrosoftUpdateServiceManager.ClientApplicationID = "My App";
@@ -230,8 +231,8 @@ Function Configure-WindowsUpdate {
 			Write-Output "`t Setting installation schedule to default ""Every day at 03:00"".";
 			
 			Try {
-				Set-ItemProperty -Path $WindowsUpdate_RegistryPath -Name "ScheduledInstallDay" -Type DWORD -Value "0" –Force;
-				Set-ItemProperty -Path $WindowsUpdate_RegistryPath -Name "ScheduledInstallTime" -Type DWORD -Value "3" –Force;
+				Set-ItemProperty -Path $WindowsUpdate_RegistryPath -Name "ScheduledInstallDay" -Type DWORD -Value "0" -Force;
+				Set-ItemProperty -Path $WindowsUpdate_RegistryPath -Name "ScheduledInstallTime" -Type DWORD -Value "3" -Force;
 			}
 			Catch {
 				Write-Output "`t `t ...FAILURE. Exiting...";
@@ -293,8 +294,8 @@ If ($LogOutput -Eq $True) {
 # SIG # Begin signature block
 # MIIVMAYJKoZIhvcNAQcCoIIVITCCFR0CAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUlHb2Ck9DIw2FeCc66rwMA0JP
-# ECSgghAfMIIEmTCCA4GgAwIBAgIPFojwOSVeY45pFDkH5jMLMA0GCSqGSIb3DQEB
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUafDjNu8Nf8f13omzDGkbjEOj
+# EzmgghAfMIIEmTCCA4GgAwIBAgIPFojwOSVeY45pFDkH5jMLMA0GCSqGSIb3DQEB
 # BQUAMIGVMQswCQYDVQQGEwJVUzELMAkGA1UECBMCVVQxFzAVBgNVBAcTDlNhbHQg
 # TGFrZSBDaXR5MR4wHAYDVQQKExVUaGUgVVNFUlRSVVNUIE5ldHdvcmsxITAfBgNV
 # BAsTGGh0dHA6Ly93d3cudXNlcnRydXN0LmNvbTEdMBsGA1UEAxMUVVROLVVTRVJG
@@ -385,24 +386,24 @@ If ($LogOutput -Eq $True) {
 # RE8gQ0EgTGltaXRlZDEjMCEGA1UEAxMaQ09NT0RPIFJTQSBDb2RlIFNpZ25pbmcg
 # Q0ECEQDn707xyENfZNmlutMrdM37MAkGBSsOAwIaBQCgeDAYBgorBgEEAYI3AgEM
 # MQowCKACgAChAoAAMBkGCSqGSIb3DQEJAzEMBgorBgEEAYI3AgEEMBwGCisGAQQB
-# gjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBR6aW2ZZMUpSeQI
-# halUiXS9QBmkLDANBgkqhkiG9w0BAQEFAASCAQBqrJ5IJGzKDt0SyUK7r8dlfcgf
-# GZ2S3I1/0CMRvz40P0gu4GKuOjk0ZUOIg/a4XLVYFwGfyCfW/hoG1Omp3sDsCQWC
-# O70+Esg3PqSbByZLck3E5m86atfhQIHS1aitt4ueUP3GpVXLa97zUVGg7DwmDhRC
-# fzkNyQGfr4rr6pMVelM7+gLhrK5qxDkiqyjZYoMcamM5cGwPWUvifUDba6nqyVPH
-# tDpDwDRDbtDEs7Ar29MKEFi69iN0XYRNp/4fbmLXC7Ow4KhjE4mhdSDXIJwL2FM8
-# lslQZNenWuY5WvjEWsD92jHcGfzzjeTvOKcZnZkYHyQ96Er/nnVWJQ7wiTPwoYIC
+# gjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBQeV1YYeNhcy7HF
+# IOtYmnK6+jB2rDANBgkqhkiG9w0BAQEFAASCAQBtZVeomlX+7u3IeH0Jsy79n0IP
+# KETX++imqzoWvhy6bdvzySPnEplhCq6kwX9tQJZvuSfDRSVLxljzetsc8Phs5t5R
+# HBCJNvUh/js3fDg1DjwLvvys8fWSop7ZpOcePxvcM6K4/2msGAvAykIbPKeXWHTs
+# gwFZwCWx/t6Y2McenJmYpIkk5pqMzTUgp4ooeNQcl0WiLYjpZ5Yh5+40xUNdSq1q
+# kEw0Nmf7k17qZ/P9geNOLIP0k6W+A/EmYNHJpEB9vkELrwUWd6QIg4igzNSbAJvJ
+# zo9BTGQNSNui6NHC24CirE7WjseMPtx/D8IP1TIQv/+ryhOqzbXj96ASr+e1oYIC
 # QzCCAj8GCSqGSIb3DQEJBjGCAjAwggIsAgEBMIGpMIGVMQswCQYDVQQGEwJVUzEL
 # MAkGA1UECBMCVVQxFzAVBgNVBAcTDlNhbHQgTGFrZSBDaXR5MR4wHAYDVQQKExVU
 # aGUgVVNFUlRSVVNUIE5ldHdvcmsxITAfBgNVBAsTGGh0dHA6Ly93d3cudXNlcnRy
 # dXN0LmNvbTEdMBsGA1UEAxMUVVROLVVTRVJGaXJzdC1PYmplY3QCDxaI8DklXmOO
 # aRQ5B+YzCzAJBgUrDgMCGgUAoF0wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAc
-# BgkqhkiG9w0BCQUxDxcNMTgwOTI1MDgyNTM0WjAjBgkqhkiG9w0BCQQxFgQU3+X+
-# AUKoQ1EkPyfetdkDAWs/XNEwDQYJKoZIhvcNAQEBBQAEggEA2aY2zbliX+HQT/zt
-# hrJ4N8gOP90K3SP6d0jxB7t/AXBmMIQiNQ+LdJgaLiVplDdgUwLvSxCvlAEJoUrt
-# eup9fQs5+5nt0NnJs1aOH3T95GZkvQKqQ8GMEDB5avTDRj5xC1Hb0E1UP5A7LKYb
-# 8Mt/bk/UrC1IuwcFlxOsaMn/zjU0F2bCd2Dv/xCZ7gs08aMrvcPDHuEqQjYyU+rC
-# YFtDd022x/F0WEm4g51/xWmlRkPHKu4TIs9EMwEUKgWDOGbzqRvpEWNi5+5P8ncx
-# lpMZV3AflLJ2SjzbFFc6OiKbDUc/EGBPt1CND1eijPQcvcIBR333bdYL+a/BzHRI
-# 7/iwnQ==
+# BgkqhkiG9w0BCQUxDxcNMTgxMDIyMDkwNDM1WjAjBgkqhkiG9w0BCQQxFgQUoIDb
+# 8RbPk/d15car5yl9mesj+v0wDQYJKoZIhvcNAQEBBQAEggEAHtq6oDMhv+uKOLiC
+# cXLo8rndOtsneGmYMxgaD/rB+SChaLZPnf4lJJCcF8LTmgA9YjfWARZzvalJuG1y
+# cCRcYNGtLINhYYKpLizjceD67QM5Xf8nbqA2AAJmrAxc23hAXE7C3N/ZU+nEq5X4
+# oCHBGB2xX/kh1RUrmZbbvH4kGGINNteXeB6hkMBCRIMymeF79QLisFifT/7jxA4E
+# 5dqWCbefCHV1IzNWI3tlJQJYFZQp7qBmveFLdWp6yetZ686jeKIEiQ4SrjsfFe1G
+# aBzNQTegzSTx6et+myfJewJeEsltB2BoiZooTD1FOPsJ7H1qnFU6GtAtcC8QtpAc
+# YGAgzw==
 # SIG # End signature block
